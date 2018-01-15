@@ -1,0 +1,9 @@
+Bewertungskriterien (max. 12 Punkte)
+
+TODO Namens-Suche-Controller liefert Ergebnisse entsprechend des o.g. Verhalten im JSON-Format (4 Punkte).
+TODO Namens-Eingabe-Formular und Weiterleitungscontroller funktionieren entsprechend des o.g. Verhaltens (2 Punkte).
+TODO Namensvorschläge werden fortlaufend bei der Eingabe angezeigt (2 Punkte).
+TODO Auswahl von Namensvorschlägen funktioniert, so als hätte der Nutzer den kompletten Namen selbst eingegeben.
+TODO Daten-Export für beliebige Nutzer funktioniert für JSON.
+TODO Daten-Export für beliebige Nutzer funktioniert für CSV.
+TODO Daten-Export funktioniert nur für angemeldete Nutzer.

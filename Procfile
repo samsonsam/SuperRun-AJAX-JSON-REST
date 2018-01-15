@@ -1,0 +1,1 @@
+web: php bin/console App:reset-database && vendor/bin/heroku-php-apache2 -C apache.conf public/
