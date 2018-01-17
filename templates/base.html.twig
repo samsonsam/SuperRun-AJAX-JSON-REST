@@ -11,9 +11,9 @@
     <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/base.css') }}">
     <script src="{{ asset('js/jquery.min.js') }}"></script>
-    {#<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">#}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     {#<script src="//code.jquery.com/jquery-1.12.4.js"></script>#}
-    {#<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>#}
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     {% block stylesheets %}
     {% endblock %}
 </head>
@@ -35,10 +35,16 @@
             </ul>
 
             <ul class="navbar-nav ml-auto">
-                <form class="form-inline mt-2 mt-md-0" role="search" method="post" action="{{ path('go') }}">
-                    <input id="autocomplete" class="form-control mr-sm-2" type="text" placeholder="Profil" aria-label="Search" name="name">
+                <form class="form-inline mt-2 mt-md-0" role="search" autocomplete="off" method="post" action="{{ path('go') }}">
+                    <input id="autocomplete" autocomplete="off" class="form-control mr-sm-2" type="text" placeholder="Profil" aria-label="Search" name="name">
                     <button class="btn btn-outline-warning my-2 my-sm-0" type="submit">Go!</button>
                 </form>
+                <script>
+                    $( "#autocomplete" ).autocomplete({
+                        source: "/search",
+                        minLength: 3
+                    });
+                </script>
                 <div class="seperator"></div>
                 {% if is_granted('IS_AUTHENTICATED_REMEMBERED') and is_granted('ROLE_USER') %}
 

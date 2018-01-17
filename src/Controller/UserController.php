@@ -23,6 +23,7 @@ use Symfony\Component\Form\Extension\Core\Type\{
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -159,15 +160,13 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/profile/{id}/diary/{_format}", defaults={"_format": "json"}, requirements={"id"="\d+"}, name="api")
+     * @Route("/profile/{id}/diary.{_format}", defaults={"_format": "json"}, requirements={"id"="\d+"}, name="api")
      */
     public function api($id, $_format)
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
         $user = $this->getDoctrine()->getRepository('App:Entity\MyUserEntity')->loadUserByID($id);
         $json = [];
-        $json[$_format] = $_format;
-
         $csv = 'date,distance,time'."\n";
         foreach ($user->getRuns() as $key => $value) {
             $csv = $csv.$value->getDate()->format('Y-m-d').','.$value->getDistance().','.$value->getTime()->format('H:i');
@@ -180,12 +179,12 @@ class UserController extends Controller
         }
 
         if ($_format == 'json') {
-            return new JsonResponse($json);
+            $response = new JsonResponse($json);
+            return $response;
         } elseif($_format == 'csv'){
             $response = new Response($csv);
             $response->headers->set('Content-Type', 'text/csv');
             return $response;
-
         }
         return new Response('', Response::HTTP_NOT_FOUND);
     }

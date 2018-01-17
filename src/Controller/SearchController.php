@@ -32,11 +32,6 @@ class SearchController extends Controller
                 return new Response("", Response::HTTP_NOT_FOUND);
             }
             return $this->redirectToRoute('profile', ['id' => $result[0]->getId()], Response::HTTP_PERMANENTLY_REDIRECT);
-//                $this->render('search/search.html.twig', [
-//                'page_title' => 'Search',
-//                'search_string' => $query,
-//                'result' => $result
-//            ]);
         } else {
             return new Response("", Response::HTTP_NOT_FOUND);
         }
@@ -44,9 +39,35 @@ class SearchController extends Controller
 
 //requirements={"query" = "[a-zA-Z0-9]*"},
     /**
-     * @Route("/search/{query}", name="search", requirements={"query" = "[a-zA-Z0-9]*"})
+     * @Route("/search/", name="search")
      */
-    public function search(Request $request,string $query)
+    public function search(Request $request)
+    {
+        if ($this->isGranted("ROLE_USER")) {
+            $query = $request->get('term');
+            //$query = preg_replace()
+            //$preg_matches = null;
+            //$pattern = '/[a-zA-Z0-9]*/';
+            if (strlen($query) < 3) {
+                return new Response('Query must be longer!', Response::HTTP_BAD_REQUEST);
+            }
+            $result = $this->getDoctrine()->getRepository('App:Entity\MyUserEntity')->searchForUserByName($query);
+            $jsondata = [];
+            foreach ($result as $key => $value) {
+                if ($key == 10) {break;}
+                $jsondata[] = $value->getUsername();
+            }
+            return new JsonResponse($jsondata);
+        } else {
+            return new JsonResponse(null, JsonResponse::HTTP_FORBIDDEN);
+        }
+
+    }
+
+    /**
+     * @Route("/search/{query}", name="searchfor", requirements={"query" = "[a-zA-Z0-9]*"})
+     */
+    public function searchfor(Request $request, $query)
     {
         if (strlen($query) < 3) {
             return new Response('Query must be longer!', Response::HTTP_BAD_REQUEST);
@@ -54,13 +75,9 @@ class SearchController extends Controller
         $this->denyAccessUnlessGranted('ROLE_USER');
         $result = $this->getDoctrine()->getRepository('App:Entity\MyUserEntity')->searchForUserByName($query);
         $jsondata = [];
-        $jsondata['query'] = $query;
         foreach ($result as $key => $value) {
             if ($key == 10) {break;}
-            $jsondata['result'.$key] = [
-                'id' => $value->getId(),
-                'name' => $value->getUsername()
-            ];
+            $jsondata[] = $value->getUsername();
         }
         return new JsonResponse($jsondata);
     }
